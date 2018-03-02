@@ -9,58 +9,58 @@ function minimalFixInitialise()
         public const char FIX_EQUALS = '=';
         public const char FIX_DELIMITER = ((char)1);
         // TAGS
-		public const int FIX_AVERAGE_PRICE = 6;
+        public const int FIX_AVERAGE_PRICE = 6;
         public const int FIX_TAG_VERSION = 8;
         public const int FIX_TAG_BODY_LENGTH = 9;
         public const int FIX_TAG_BODY_CHECKSUM = 10;
         public const int FIX_TAG_CLIENT_ORDER_ID = 11;
-		public const int FIX_TAG_CUMULATIVE_QUANTITY = 14;
-		public const int FIX_TAG_EXEC_ID = 17;
+        public const int FIX_TAG_CUMULATIVE_QUANTITY = 14;
+        public const int FIX_TAG_EXEC_ID = 17;
         public const int FIX_TAG_EXEC_INST = 18;
-		public const int FIX_TAG_EXEC_TRANSTYPE = 20;
+        public const int FIX_TAG_EXEC_TRANSTYPE = 20;
         public const int FIX_TAG_HAND_INST = 21;
-		public const int FIX_TAG_LAST_PRICE = 31;
-		public const int FIX_TAG_LAST_QUANTITY = 32;
+        public const int FIX_TAG_LAST_PRICE = 31;
+        public const int FIX_TAG_LAST_QUANTITY = 32;
         public const int FIX_TAG_SEQUENCE_NUMBER = 34;
         public const int FIX_TAG_MESSAGE_TYPE = 35;
-		public const int FIX_TAG_ORDER_ID = 37;
+        public const int FIX_TAG_ORDER_ID = 37;
         public const int FIX_TAG_ORDER_QUANTITY = 38;
         public const int FIX_TAG_ORDER_STATUS = 39;
         public const int FIX_TAG_ORDER_TYPE = 40;
-		public const int FIX_TAG_ORIG_CLIENT_ORDER_ID = 41;
+        public const int FIX_TAG_ORIG_CLIENT_ORDER_ID = 41;
         public const int FIX_TAG_ORDER_PRICE = 44;
         public const int FIX_TAG_SECURITY_ID = 48;
         public const int FIX_TAG_SENDER_COMPID = 49;
-		public const int FIX_TAG_SENDER_SUBID = 50;
+        public const int FIX_TAG_SENDER_SUBID = 50;
         public const int FIX_TAG_SENDING_TIME = 52;
         public const int FIX_TAG_ORDER_SIDE = 54;
         public const int FIX_TAG_SYMBOL = 55;
         public const int FIX_TAG_TARGET_COMPID = 56;
-		public const int FIX_TAG_TARGET_SUBID = 57;
+        public const int FIX_TAG_TARGET_SUBID = 57;
         public const int FIX_TAG_TIME_IN_FORCE = 59;
         public const int FIX_TAG_TRANSACTION_TIME = 60;
         public const int FIX_TAG_ENCRYPT_METHOD = 98;
         public const int FIX_TAG_HEARTBEAT_INTERVAL = 108;
-		public const int FIX_TAG_TEST_REQ_ID = 112;
+        public const int FIX_TAG_TEST_REQ_ID = 112;
         public const int FIX_TAG_EXEC_TYPE = 150;
         public const int FIX_TAG_LEAVES_QTY = 151;
-		public const int FIX_TAG_USERNAME = 553;
-		public const int FIX_TAG_PASSWORD = 554;
-		public const int FIX_TAG_USER_REQUEST_ID = 923;
-		public const int FIX_TAG_USER_PASSWORD = 924;
+        public const int FIX_TAG_USERNAME = 553;
+        public const int FIX_TAG_PASSWORD = 554;
+        public const int FIX_TAG_USER_REQUEST_ID = 923;
+        public const int FIX_TAG_USER_PASSWORD = 924;
         // MESSAGE TYPES
         public const string FIX_MESSAGE_HEARTBEAT = "0";
-		public const string FIX_MESSAGE_TEST_REQUEST = "1";
+        public const string FIX_MESSAGE_TEST_REQUEST = "1";
         public const string FIX_MESSAGE_LOG_ON = "A";
         public const string FIX_MESSAGE_LOG_OFF = "5";
-		public const string FIX_MESSAGE_ADMIN_REJECT = "3";
-		public const string FIX_MESSAGE_USER_LOGON = "BE";
-		public const string FIX_MESSAGE_USER_RESPONSE = "BF";
+        public const string FIX_MESSAGE_ADMIN_REJECT = "3";
+        public const string FIX_MESSAGE_USER_LOGON = "BE";
+        public const string FIX_MESSAGE_USER_RESPONSE = "BF";
         public const string FIX_MESSAGE_EXECUTION_REPORT = "8";
         public const string FIX_MESSAGE_NEW_ORDER = "D";
         public const string FIX_MESSAGE_AMEND_ORDER = "G";
         public const string FIX_MESSAGE_CANCEL_ORDER = "F";
-		public const string FIX_MESSAGE_BUSINESS_REJECT = "j";
+        public const string FIX_MESSAGE_BUSINESS_REJECT = "j";
         // ORDER STATUS
         public const int FIX_ORDER_STATUS_NEW = 0;
         public const int FIX_ORDER_STATUS_PARTIALLY_FILLED = 1;
@@ -245,7 +245,7 @@ function minimalFixInitialise()
  
         public string toString(bool sendingAsAMessage, bool updateTransactionTime = false)
         {
-			m_builder = new System.Text.StringBuilder();
+            m_builder = new System.Text.StringBuilder();
             // FIX VERSION
             appendTagValueToBuilder(FixConstants.FIX_TAG_VERSION, getTagValue(FixConstants.FIX_TAG_VERSION));
  
@@ -344,7 +344,7 @@ function minimalFixInitialise()
         private System.Net.Sockets.Socket m_socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
         private System.Net.Sockets.Socket m_serverSocket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
         private System.Timers.Timer m_heartbeatTimer = new System.Timers.Timer();
-		private System.Threading.Mutex m_mutex = new System.Threading.Mutex();
+        private System.Threading.Mutex m_mutex = new System.Threading.Mutex();
  
         public bool Connected { get; set; }
         public string TargetAddress { get; set; }
@@ -364,7 +364,7 @@ function minimalFixInitialise()
             EncryptionMethod = FixConstants.FIX_ENCRYPTION_NONE;
             IncomingSequenceNumber = 1;
             OutgoingSequenceNumber = 1;
-			m_socket.NoDelay = true;
+            m_socket.NoDelay = true;
         }
  
         public FixMessage getBaseMessage(string messageType)
@@ -467,23 +467,23 @@ function minimalFixInitialise()
                                 Connected = true;
                                 IncomingSequenceNumber = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
                                 HeartbeatInterval = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_HEARTBEAT_INTERVAL));
-								
+                                
                                 if( clientcompId.Length == 0)
                                 {
-									TargetCompid = message.getTagValue(FixConstants.FIX_TAG_SENDER_COMPID);
+                                    TargetCompid = message.getTagValue(FixConstants.FIX_TAG_SENDER_COMPID);
                                 }
                                 else
                                 {
-									TargetCompid = clientcompId;
+                                    TargetCompid = clientcompId;
                                 }
-								
+                                
                                 FixVersion = message.getTagValue(FixConstants.FIX_TAG_VERSION);
  
                                 if (message.hasTag(FixConstants.FIX_TAG_ENCRYPT_METHOD))
                                 {
                                     EncryptionMethod = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_ENCRYPT_METHOD));
                                 }
-								
+                                
                                 send(getLogonMessage());
                             }
                         }
@@ -510,15 +510,15 @@ function minimalFixInitialise()
             message.setTag(FixConstants.FIX_TAG_VERSION, FixVersion);
             message.setTag(FixConstants.FIX_TAG_SENDER_COMPID, SenderCompid);
             message.setTag(FixConstants.FIX_TAG_TARGET_COMPID, TargetCompid);
-			//////////////////////////////////////////////////////////////
-			m_mutex.WaitOne();
-			message.setTag(FixConstants.FIX_TAG_SEQUENCE_NUMBER, OutgoingSequenceNumber);
-			var str = message.toString(true, true);
+            //////////////////////////////////////////////////////////////
+            m_mutex.WaitOne();
+            message.setTag(FixConstants.FIX_TAG_SEQUENCE_NUMBER, OutgoingSequenceNumber);
+            var str = message.toString(true, true);
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes(str);
             m_socket.Send(bytes);
             OutgoingSequenceNumber += 1;
-			m_mutex.ReleaseMutex();
-			//////////////////////////////////////////////////////////////
+            m_mutex.ReleaseMutex();
+            //////////////////////////////////////////////////////////////
         }
  
         private string recvString(int length)

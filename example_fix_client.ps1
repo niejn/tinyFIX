@@ -15,26 +15,26 @@ try
  
     $fixClient = New-Object FixClient
     $fixClient.initialise("FIX.4.2", "127.0.0.1", $simulatorPort, $clientCompId, $simulatorCompId)
-	
-	$fixClient.connect()
-	
-	$order = $fixClient.FixSession.getBaseMessage( [FixConstants]::FIX_MESSAGE_NEW_ORDER )
-	$order.setTag([FixConstants]::FIX_TAG_CLIENT_ORDER_ID , 1)
-	$order.setTag([FixConstants]::FIX_TAG_SYMBOL ,  "GOOGL")
-	$order.setTag([FixConstants]::FIX_TAG_ORDER_QUANTITY, 100)
-	$order.setTag([FixConstants]::FIX_TAG_ORDER_PRICE , 300)
-	$order.setTag([FixConstants]::FIX_TAG_ORDER_SIDE , [FixConstants]::FIX_ORDER_SIDE_BUY)
-	
+    
+    $fixClient.connect()
+    
+    $order = $fixClient.FixSession.getBaseMessage( [FixConstants]::FIX_MESSAGE_NEW_ORDER )
+    $order.setTag([FixConstants]::FIX_TAG_CLIENT_ORDER_ID , 1)
+    $order.setTag([FixConstants]::FIX_TAG_SYMBOL ,  "GOOGL")
+    $order.setTag([FixConstants]::FIX_TAG_ORDER_QUANTITY, 100)
+    $order.setTag([FixConstants]::FIX_TAG_ORDER_PRICE , 300)
+    $order.setTag([FixConstants]::FIX_TAG_ORDER_SIDE , [FixConstants]::FIX_ORDER_SIDE_BUY)
+    
     $fixClient.send($order)
-	
-	Write-Host
+    
+    Write-Host
     Write-Host "Sent : " -foregroundcolor "Yellow"
     Write-Host $order.toString($false)
     Write-Host
-	
-	$execReport = $fixClient.recv()
-	
-	Write-Host
+    
+    $execReport = $fixClient.recv()
+    
+    Write-Host
     Write-Host "Received : " -foregroundcolor "Yellow"
     Write-Host $execReport.toString($false)
     Write-Host
