@@ -12,6 +12,7 @@ You can just download tinyFix.py or tinyFix.ps1 and start writing a FIX applicat
 **Writing a FIX client in a few minutes :** Code below is Python but please see example_fix_client.ps1 for Powershell version :
 
     
+		```python
         from tiny_fix import FixConstants, FixClient, FixTime
         
         fixClient = FixClient()
@@ -42,11 +43,11 @@ You can just download tinyFix.py or tinyFix.ps1 and start writing a FIX applicat
         print("Received : " + executionReport.toString())
 
         fixClient.disconnect() # Sends logoff message , you can customise it by passing a FIX message          
-        
+        ```
     
 **Writing a FIX server in a few minutes :** Code below is Python but please see example_fix_client.ps1 for Powershell version : 
 
-
+		```python
         from tiny_fix import FixConstants, FixClient, FixTime
 
         execId = 1
@@ -81,9 +82,9 @@ You can just download tinyFix.py or tinyFix.ps1 and start writing a FIX applicat
             execId = execId + 1
 
         fixServer.disconnect() # Sends logoff message , you can customise it by passing a FIX message
+        ```
         
-        
-**Validations :** API does not do any validations but they can be added externally easily.
+**Validations :** API does not do any validations such as sequence numbers, checksum and field types but they can be added externally easily.
 
 **Fix version / dictionary :** Having no validations help here as no dictionaries required. You can customise any message type including admin level messages which should allow connectivity with any type of venue.
 
