@@ -3,7 +3,7 @@ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
  
 try
 {
-    minimalFixInitialise
+    tinyFixInitialise
  
     [int]$simulatorPort = 5555
     [string]$simulatorCompId = "SERVER"
@@ -60,6 +60,7 @@ try
 }
 catch
 {
+    Write-Host $_.Exception.Message
 }
 finally
 {

@@ -1,4 +1,4 @@
-function minimalFixInitialise()
+function tinyFixInitialise()
 {
   $source = @"
   using System;
