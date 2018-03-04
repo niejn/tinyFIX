@@ -8,6 +8,9 @@ Since it is for stock Python and Powershell, it will work on most Linux distribu
     
 You can just download tinyFix.py or tinyFix.ps1 and start writing a FIX application by importing single-file library.
 
+Python single-file library : https://github.com/akhin/tiny_fix/blob/master/library/tiny_fix.py
+
+Powershell single-file library : https://github.com/akhin/tiny_fix/blob/master/library/tiny_fix.ps1
 
 **Writing a FIX client in a few minutes :** Code below is Python but please see example_fix_client.ps1 for Powershell version :
 
@@ -99,4 +102,12 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 
 **Timeouts/Async   :** Currently does not support async APIs however send and recv methods support timeout values. Timeout for sending and receiving FIX messages can be specified via FixSession::setNetworkTimeout call.
 
-**Thread safety  :** Only send and recv methods are using same mutex. There is no other syncronisation considerations.  
+**Thread safety  :** Only send and recv methods are using same mutex. There is no other syncronisation considerations.
+
+**Limitations :** Current FIXServer is supporting only single client.
+
+**Example applications :** You will find example FIX server and clients in library directory : https://github.com/akhin/tiny_fix/blob/master/library
+
+Also you can find an additional parallel client automation example : https://github.com/akhin/tiny_fix/blob/master/library/example_concurrent_client_automation.py
+
+It can load FIX messages from a text file. Then it will fork specified number of FIX clients to a target server. It will consider each fully filled or canceled order as processed. The automation ends when all orders are processed.

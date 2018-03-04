@@ -119,7 +119,7 @@ function tinyFixInitialise()
         }
     }
     
-    // Not using .Net FW tuples in order to support most C# / .Net FW versions
+    // Not using .Net FW tuples in order to support most C# / .Net FW versions , sticking with C#2.0 and .Net2.0
     public class FixTagValuePair
     {
         public int Tag {get; set;}
@@ -360,9 +360,12 @@ function tinyFixInitialise()
  
                     while ((line = file.ReadLine()) != null)
                     {
-                        FixMessage currentMessage = new FixMessage();
-                        currentMessage.loadFromString(line);
-                        ret.Add(currentMessage);
+                        if( line.StartsWith("#") == false )
+                        {
+							FixMessage currentMessage = new FixMessage();
+							currentMessage.loadFromString(line);
+							ret.Add(currentMessage);
+						}
                     }
                 }
             }
