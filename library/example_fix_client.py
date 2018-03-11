@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from tiny_fix import FixConstants, FixClient, FixTime
+from tinyFix import FixConstants, FixClient
 
 def main():
     fixClient = FixClient()
@@ -8,34 +8,36 @@ def main():
         simulatorAddress = "127.0.0.1"
         simulatorCompId="SERVER"
         clientCompId="CLIENT"
-        simulatorSubId = clientSubId = "01"
         print("Client is starting on " + str(simulatorPort) + " with compid " + clientCompId )
 
-        fixClient.initialise(FixConstants.FIX_VERSION_4_2, simulatorAddress, simulatorPort, clientCompId, simulatorSubId, simulatorCompId, clientSubId)
         fixClient.fixSession.setUseSequenceNumberFile(True)       # Optional , if not called seq numbers will start from 1 and 
                                                                   # You can also directly set seq numbers via fixSession object
-        fixClient.fixSession.setTimePrecision(FixTime.FIX_MICROSECONDS) # Default value is FIX_MILLISECONDS, you can also set to FIX_SECONDS
-        fixClient.connect() # You can also pass a custom logon fix message
+        fixClient.fixSession.setTimePrecision(FixConstants.TIMESTAMP_PRECISION_MICROSECONDS) # Default value is MILLISECONDS, you can also set to SECONDS
+        fixClient.connect(simulatorAddress, simulatorPort, FixConstants.VERSION_4_2, clientCompId, simulatorCompId) # Sends logon message , 
+                                                                                                                    # You can send a customised logon message   
+                                                                                                                    # by calling connectWithCustomLogonMessage
 
         for i in range(3):
-            order = fixClient.fixSession.getBaseMessage(FixConstants.FIX_MESSAGE_NEW_ORDER)
+            order = fixClient.fixSession.getBaseMessage(FixConstants.MESSAGE_NEW_ORDER)
             order.setTags([
-                            (FixConstants.FIX_TAG_CLIENT_ORDER_ID, 1), (FixConstants.FIX_TAG_SYMBOL, "GOOGL"),
-                            (FixConstants.FIX_TAG_ORDER_QUANTITY, 100), (FixConstants.FIX_TAG_ORDER_PRICE, 300),
-                            (FixConstants.FIX_TAG_ORDER_SIDE, FixConstants.FIX_ORDER_SIDE_BUY),
+                            (FixConstants.TAG_CLIENT_ORDER_ID, 1), (FixConstants.TAG_SYMBOL, "GOOGL"),
+                            (FixConstants.TAG_ORDER_QUANTITY, 100), (FixConstants.TAG_ORDER_PRICE, 300),
+                            (FixConstants.TAG_ORDER_SIDE, FixConstants.ORDER_SIDE_BUY),
                             (453, 2), (448, 1234), (447, 'P'), (452, 1), (448, 1235), (447, 'D'), (452, 2) #Repeating groups
                          ])
 
             fixClient.send(order)
 
             print("")
-            print("Sent : " + order.toString())
+            print("Sent : ")
+            print(order)
             print("")
 
             executionReport = fixClient.recv()
 
             print("")
-            print("Received : " + executionReport.toString())
+            print("Received : ") 
+            print(executionReport)
             print("")
 
     except ValueError as err:

@@ -1,20 +1,20 @@
 #!/usr/bin/python
-from tiny_fix import FixConstants, FixServer, FixTime
+from tinyFix import FixConstants, FixServer
 
 def main():
     fixServer = FixServer()
     try:
-        execId=1
         simulatorPort = 5555
         simulatorCompId="SERVER"
-        simulatorSubId = "01"
         
         print("Venue simulator is starting on " + str(simulatorPort) + " with compid " + simulatorCompId )
 
         fixServer.fixSession.setUseSequenceNumberFile(True)       # Optional , if not called seq numbers will start from 1 and 
                                                                   # You can also directly set seq numbers via fixSession object
-        fixServer.fixSession.setTimePrecision(FixTime.FIX_MICROSECONDS) # Default value is FIX_MILLISECONDS, you can also set to FIX_SECONDS
-        fixServer.start(simulatorPort, simulatorCompId, simulatorSubId) # Responds with logon message, you can customise it by passing a FIX message
+        fixServer.fixSession.setTimePrecision(FixConstants.TIMESTAMP_PRECISION_MICROSECONDS) # Default value is MILLISECONDS, you can also set to SECONDS
+        fixServer.start(simulatorPort, simulatorCompId)  # Responds to logon message , 
+                                                         # You can respond with a customised logon message  
+                                                         # by calling startWithCustomLogonResponse
 
         while True:
             fixMessage = fixServer.recv()
@@ -25,34 +25,33 @@ def main():
             
             print("")
             print("Received : ")
-            print(fixMessage.toString())
+            print(fixMessage)
             print("")
             
-            if messageType == FixConstants.FIX_MESSAGE_LOG_OFF:
+            if messageType == FixConstants.MESSAGE_LOG_OFF:
                 print("")
                 print("Client logged off")
                 print("")
                 break
-            elif messageType == FixConstants.FIX_MESSAGE_HEARTBEAT:
+            elif messageType == FixConstants.MESSAGE_HEARTBEAT:
                 print("Client sent heartbeat")
                 heartBeatResponse = fixServer.fixSession.getHeartbeatMessage()
                 fixServer.send(heartBeatResponse)
                 continue
             else:
-                clientOrderId = fixMessage.getTagValue(FixConstants.FIX_TAG_CLIENT_ORDER_ID)
-                execReport = fixServer.fixSession.getBaseMessage(FixConstants.FIX_MESSAGE_EXECUTION_REPORT)
+                clientOrderId = fixMessage.getTagValue(FixConstants.TAG_CLIENT_ORDER_ID)
+                execReport = fixServer.fixSession.getBaseMessage(FixConstants.MESSAGE_EXECUTION_REPORT)
                 execReport.setTags([
-                        (FixConstants.FIX_TAG_CLIENT_ORDER_ID, clientOrderId), (FixConstants.FIX_TAG_EXEC_ID, str(execId)),
-                        (FixConstants.FIX_TAG_ORDER_STATUS, FixConstants.FIX_ORDER_STATUS_NEW), (FixConstants.FIX_TAG_EXEC_TYPE, FixConstants.FIX_ORDER_STATUS_NEW)
+                        (FixConstants.TAG_CLIENT_ORDER_ID, clientOrderId), 
+                        (FixConstants.TAG_ORDER_STATUS, FixConstants.ORDER_STATUS_NEW), 
+                        (FixConstants.TAG_EXEC_TYPE, FixConstants.ORDER_STATUS_NEW)
                      ])
-                fixServer.send(execReport)
+                fixServer.send(execReport, True) # True is for sending executionId
                 
                 print("")
                 print("Sent : ")
-                print(execReport.toString())
+                print(execReport)
                 print("")
-            
-                execId = execId + 1
 
     except ValueError as err:
         print(err.args)
