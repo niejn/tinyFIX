@@ -84,16 +84,17 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 ```
 		
 **Validations :** API does not do any validations such as :
-									admin level
-										sequence numbers 
-										checksum
-										whether heartbeat received
-									business level
-										field types
-										required fields for message types
-										differences between FIX versions
+									
+				* admin level
+					sequence numbers 
+					checksum
+					whether heartbeat received
+				* business level
+					field types
+					required fields for message types
+					differences between FIX versions
 										
-				  However all can be added externally easily when using tinyFix.
+				However all can be added externally easily when using tinyFix.
 
 **Fix version / dictionary :** Having no validations help here as no dictionaries required. You can customise any message type including admin level messages which should allow connectivity with any type of venue to avoid cost of configuration/modification of an existing FIX engine.
 
