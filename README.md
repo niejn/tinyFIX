@@ -14,7 +14,7 @@ Python single-file library : https://github.com/akhin/tiny_fix/blob/master/libra
 
     
 ```python
-from tiny_fix import FixConstants, FixClient
+from tinyFix import FixConstants, FixClient
 
 fixClient = FixClient()
 
@@ -22,17 +22,15 @@ fixClient.fixSession.setUseSequenceNumberFile(True)       # Optional , if not ca
                                                           # You can also directly set seq numbers via fixSession object
 fixClient.fixSession.setTimePrecision(FixConstants.TIMESTAMP_PRECISION_MICROSECONDS) # Default value is MILLISECONDS, you can also set to SECONDS
 
-fixClient.connect("127.0.0.1", serverPortNumber, FixConstants.VERSION_4_2, clientCompId, serverCompId) # Sends logon message , 
-																									   # You can send a customised logon message	
-																									   # by calling connectWithCustomLogonMessage
+fixClient.connect("127.0.0.1", serverPortNumber, FixConstants.VERSION_4_2, clientCompId, serverCompId) # Sends logon message , call connectWithCustomLogonMessage for a custom logon message
 
 order = fixClient.fixSession.getBaseMessage(FixConstants.FIX_MESSAGE_NEW_ORDER)
 
 order.setTags([
                 (FixConstants.TAG_CLIENT_ORDER_ID, 1), (FixConstants.TAG_SYMBOL, "GOOGL"),
-				(FixConstants.TAG_ORDER_QUANTITY, 100), (FixConstants.TAG_ORDER_PRICE, 300),
-				(FixConstants.TAG_ORDER_SIDE, FixConstants.ORDER_SIDE_BUY),
-				(453, 2), (448, 1234), (447, 'P'), (452, 1), (448, 1235), (447, 'D'), (452, 2) #Repeating groups
+                (FixConstants.TAG_ORDER_QUANTITY, 100), (FixConstants.TAG_ORDER_PRICE, 300),
+                (FixConstants.TAG_ORDER_SIDE, FixConstants.ORDER_SIDE_BUY),
+                (453, 2), (448, 1234), (447, 'P'), (452, 1), (448, 1235), (447, 'D'), (452, 2) #Repeating groups
              ])
 
 fixClient.send(order)
@@ -49,7 +47,7 @@ fixClient.disconnect() # Sends logoff message , you can customise it by passing 
 **Writing a FIX server in a few minutes :**
 
 ```python
-from tiny_fix import FixConstants, FixClient
+from tinyFix import FixConstants, FixClient
 
 execId = 1
 
@@ -60,9 +58,7 @@ fixServer.fixSession.setUseSequenceNumberFile(True)       # Optional , if not ca
 
 fixServer.fixSession.setTimePrecision(FixTime.TIMESTAMP_PRECISION_MICROSECONDS) # Default value is MILLISECONDS, you can also set to SECONDS
 
-fixServer.start(serverPortNumber, serverCompId, simulatorSubId) # Responds to logon message , 
-														        # You can respond with a customised logon message	
-																# by calling startWithCustomLogonResponse
+fixServer.start(serverPortNumber, serverCompId, simulatorSubId) # Responds to logon message , call startWithCustomLogonResponse for a custom logon message
 
 while True:
 
@@ -88,16 +84,16 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 ```
         
 **Validations :** API does not do any validations such as :
-									admin level
-										sequence numbers 
-										checksum
-										whether heartbeat received
-									business level
-										field types
-										required fields for message types
-										differences between FIX versions
-										
-				  However all can be added externally easily when using tinyFix.
+                                    admin level
+                                        sequence numbers 
+                                        checksum
+                                        whether heartbeat received
+                                    business level
+                                        field types
+                                        required fields for message types
+                                        differences between FIX versions
+                                        
+                  However all can be added externally easily when using tinyFix.
 
 **Fix version / dictionary :** Having no validations help here as no dictionaries required. You can customise any message type including admin level messages which should allow connectivity with any type of venue to avoid cost of configuration/modification of an existing FIX engine.
 
@@ -120,4 +116,4 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 
 **Example applications :** You will find example FIX server and clients in library directory : https://github.com/akhin/tiny_fix/blob/master/library
 
-**Tools :** There is currently one tool , fix_proxy.py , which is basically a TCP proxy and stops when session between two sides end. It is useful to monitor FIX messages between one server and client. It can also be used as a port forwarder for FIX applications.
+**Tools :** There is currently one tool , fix_proxy.py in https://github.com/akhin/tiny_fix/blob/master/tools/ , which is basically a TCP proxy and stops when session between two sides end. It is useful to monitor FIX messages between one server and client. It can also be used as a port forwarder for FIX applications.
