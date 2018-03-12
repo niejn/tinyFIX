@@ -2,6 +2,8 @@
 
 # tinyFIX
 
+**What :**
+
 A minimal FIX protocol library for stock Python(2.7) to prototype FIX server and client applications.
 	
 Since it is for stock Python, it will work on most Linux distributions as is.
@@ -11,7 +13,7 @@ Python single-file library : https://github.com/akhin/tiny_fix/blob/master/libra
 
 Or you can use its package version : https://github.com/akhin/tiny_fix/blob/master/library_package/
 
-*Purpose :** Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do behind the scenes that you are not aware.
+**Why :** Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do behind the scenes that you are not aware.
 You will need to configure their XML dictionaries and you will need to learn and use different APIs to customise FIX messages when connecting to different venues. You might even to 
 modify their source code. 
 
@@ -116,6 +118,6 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 
 **Limitations :** Current FIXServer is supporting only single client.
 
-**Example applications :** You will find example FIX server and clients in library directory : https://github.com/akhin/tiny_fix/blob/master/library
+**Example applications :** You will find example FIX server, client and concurrent client automation in examples directory : https://github.com/akhin/tiny_fix/blob/master/examples
 
 **Tools :** There is currently one tool , fix_proxy.py in https://github.com/akhin/tiny_fix/blob/master/tools/ , which is basically a TCP proxy and stops when session between two sides end. It is useful to monitor FIX messages between one server and client. It can also be used as a port forwarder for FIX applications.
