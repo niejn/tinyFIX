@@ -15,11 +15,11 @@ Or you can use its package version : https://github.com/akhin/tiny_fix/blob/mast
 
 **Why :** 
 
-Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do behind the scenes that you are not aware.
+Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do many things behind the scenes that you are not aware.
 You will need to configure their XML dictionaries and you will need to learn and use different APIs to customise FIX messages when connecting to different venues. You might even to 
 modify their source code. 
 
-You have full control over your FIX messages generated with tinyFix. You can do any type of custom logon or other operations. For ex , if you want microseconds precision for tag 52 and tag 60 for Mifid2 ,
+You have full control over your FIX messages generated with tinyFix. You can have connectivity to any venue and do any type of custom logon or other operations. For ex , if you want microseconds precision for tag 52 and tag 60 for Mifid2 ,
 you can do it with tinyFix. You don`t need to spend time to find out specific APIs , instead you just need to call addTag/hasTag/getTagValue methods for all types of messages.
 
 **Writing a FIX client in a few minutes :**
