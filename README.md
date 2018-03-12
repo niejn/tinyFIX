@@ -13,7 +13,9 @@ Python single-file library : https://github.com/akhin/tiny_fix/blob/master/libra
 
 Or you can use its package version : https://github.com/akhin/tiny_fix/blob/master/library_package/
 
-**Why :** Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do behind the scenes that you are not aware.
+**Why :** 
+
+Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do behind the scenes that you are not aware.
 You will need to configure their XML dictionaries and you will need to learn and use different APIs to customise FIX messages when connecting to different venues. You might even to 
 modify their source code. 
 
