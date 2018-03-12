@@ -2,13 +2,21 @@
 
 # tinyFIX
 
-A minimal single-file library with no dependencies except stock Python(2.7) to prototype FIX server and client applications.
+A minimal FIX protocol library for stock Python(2.7) to prototype FIX server and client applications.
 	
-Since it is for stock Python, it will work on most Linux distributions.
+Since it is for stock Python, it will work on most Linux distributions as is.
 	
 You can just download tinyFix.py and start writing a FIX application by importing single-file library.
+Python single-file library : https://github.com/akhin/tiny_fix/blob/master/library_single_file/tinyFix.py
 
-Python single-file library : https://github.com/akhin/tiny_fix/blob/master/library/tinyFix.py
+Or you can use its package version : https://github.com/akhin/tiny_fix/blob/master/library_package/
+
+*Purpose :** Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do behind the scenes that you are not aware.
+You will need to configure their XML dictionaries and you will need to learn and use different APIs to customise FIX messages when connecting to different venues. You might even to 
+modify their source code. 
+
+You have full control over your FIX messages generated with tinyFix. You can do any type of custom logon or other operations. For ex , if you want microseconds precision for tag 52 and tag 60 for Mifid2 ,
+you can do it with tinyFix. You don`t need to spend time to find out specific APIs , instead you just need to call addTag/hasTag/getTagValue methods for all types of messages.
 
 **Writing a FIX client in a few minutes :**
 
@@ -56,7 +64,7 @@ fixServer = FixServer()
 fixServer.fixSession.setUseSequenceNumberFile(True)		  # Optional , if not called seq numbers will start from 1 and 
 														  # You can also directly set seq numbers via fixSession object
 
-fixServer.fixSession.setTimePrecision(FixTime.TIMESTAMP_PRECISION_MICROSECONDS) # Default value is MILLISECONDS, you can also set to SECONDS
+fixServer.fixSession.setTimePrecision(FixConstants.TIMESTAMP_PRECISION_MICROSECONDS) # Default value is MILLISECONDS, you can also set to SECONDS
 
 fixServer.start(serverPortNumber, serverCompId, simulatorSubId) # Responds to logon message , call startWithCustomLogonResponse for a custom logon message
 
@@ -85,7 +93,6 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 		
 **Validations :** API does not do any admin level ( sequence numbers , checksums, heartbeat check etc ) or business level ( field types , required fields for messages types , values , difference between FIX versions. ) validations. However all can be added externally easily when using tinyFix.
 
-
 **Fix version / dictionary :** Having no validations help here as no dictionaries required. You can customise any message type including admin level messages which should allow connectivity with any type of venue to avoid cost of configuration/modification of an existing FIX engine.
 
 **Adding additional FIX header tags:** Existing implementation add only mandatory header tags per FIX message throughout the session. You can add additional tags calling FixSession::addHeaderTagValuePair
@@ -99,9 +106,13 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 
 **Repeating groups	:** APIs allow generation and parsing of repeating groups. You basically need to specify an index when using getTagValue method.
 
-**Timeouts/Async   :** Currently does not support async APIs however send and recv methods support timeout values. Timeout for sending and receiving FIX messages can be specified via FixSession::setNetworkTimeout call.
+**Timeouts/Async   :** Currently does not support async APIs however FixTcpTransport class methods connect/accept/send/recv methods support timeout values. Timeout for sending and receiving FIX messages can be specified by setting fixSession.fixTransport.netwrokTimeoutInSeconds.
 
 **Thread safety	 :** Only send and recv methods are using same mutex. There is no other syncronisation considerations. You can explicitly call FixSession::lock and FixSession::unlock methods.
+
+**TCP Receiving mechanism :** Receiving mechanism does not do any caching and entirely relies on tag 9 ( body lenght ) when receiving messages. This mechanism does not have the highest performance as it is not trying to receive all at once from socket buffer and it is also fragile as relies on the other side properly setting tag9. However it will work in most cases.
+
+**Using message queues instead of TCP :** Many internal enterprise FIX applications work with message queues like Tibco or Solace. You can use tinyFix with those by implementing a transport class ( see FixTcpTransport class) and using your implementation by setting fixSession.fixTransport variable.
 
 **Limitations :** Current FIXServer is supporting only single client.
 

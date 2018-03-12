@@ -1,9 +1,30 @@
 #!/usr/bin/python
+'''
+Copyright (c) 2018 Akin Ocal
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
 import socket
 import os.path
 import threading
-from threading import Thread, Lock
-import time
+from threading import Lock
 from datetime import datetime
 
 class FixConstants:
@@ -349,7 +370,7 @@ class FixMessage:
         ret = self.toString(False)
         return ret
 
-class FixTCPTransport:
+class FixTcpTransport:
     def __init__(self):
         self.networkTimeoutInSeconds = 0
         self.targetAddress = ""
@@ -367,9 +388,7 @@ class FixTCPTransport:
     def connect(self):
         connected = False
         message = None
-        # Not supporting timeouts in accept and connect methods
-        originalTimeoutInSeconds = self.networkTimeoutInSeconds
-        self.networkTimeoutInSeconds = 0
+        self.arrangeSocketTimeOut()
         try:
             while True:
                 try:
@@ -388,15 +407,15 @@ class FixTCPTransport:
                 exceptionMessage += "\n"
                 exceptionMessage += message.toString()
             print(exceptionMessage)
-        self.networkTimeoutInSeconds = originalTimeoutInSeconds
+        self.enableSocketBlocking()
         return  connected
         
     def accept(self):
         connected = False
         message = None
-        # Not supporting timeouts in accept and connect methods
-        originalTimeoutInSeconds = self.networkTimeoutInSeconds
-        self.networkTimeoutInSeconds = 0
+        
+        if self.networkTimeoutInSeconds > 0:
+            self.serverSocket.settimeout(self.networkTimeoutInSeconds)
             
         try:
             self.serverSocket.bind( (self.targetAddress, self.targetPort))
@@ -410,7 +429,7 @@ class FixTCPTransport:
                 exceptionMessage += "\n"
                 exceptionMessage += message.toString()
             print(exceptionMessage)
-        self.networkTimeoutInSeconds = originalTimeoutInSeconds
+        self.enableSocketBlocking()
         return  connected
 
     def close(self):
