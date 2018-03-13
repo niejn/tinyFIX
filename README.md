@@ -16,7 +16,7 @@ Or you can use its package version : https://github.com/akhin/tiny_fix/blob/mast
 **Why :** 
 
 Created it because it might not always be straightforward to crete test applications using existing FIX engines. FIX engines can do many things behind the scenes that you are not aware.
-You will need to configure their XML dictionaries and you will need to learn and use different APIs to customise FIX messages when connecting to different venues. You might even to 
+You will need to configure their XML dictionaries and you will need to learn and use different APIs to customise FIX messages when connecting to different venues. You might even need to 
 modify their source code. 
 
 You have full control over your FIX messages generated with tinyFix. You can have connectivity to any venue and do any type of custom logon or other operations. For ex , if you want microseconds precision for tag 52 and tag 60 for Mifid2 ,
@@ -114,7 +114,7 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 
 **Thread safety	 :** Only send and recv methods are using same mutex. There is no other syncronisation considerations. You can explicitly call FixSession::lock and FixSession::unlock methods.
 
-**TCP Receiving mechanism :** Receiving mechanism does not do any caching and entirely relies on tag 9 ( body lenght ) when receiving messages. This mechanism does not have the highest performance as it is not trying to receive all at once from socket buffer and it is also fragile as relies on the other side properly setting tag9. However it will work in most cases.
+**TCP Receiving mechanism :** Receiving mechanism does not do any caching and entirely relies on tag 9 ( body length ) when receiving messages. This mechanism does not have the highest performance as it is not trying to receive all at once from socket buffer and it is also fragile as relies on the other side properly setting tag9. However it will work in most cases.
 
 **Using message queues instead of TCP :** Many internal enterprise FIX applications work with message queues like Tibco or Solace. You can use tinyFix with those by implementing a transport class ( see FixTcpTransport class) and using your implementation by setting fixSession.fixTransport variable.
 
