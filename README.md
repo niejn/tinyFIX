@@ -118,6 +118,8 @@ fixServer.disconnect() # Sends logoff message , you can customise it by passing 
 
 **Using message queues instead of TCP :** Many internal enterprise FIX applications work with message queues like Tibco or Solace. You can use tinyFix with those by implementing a transport class ( see FixTcpTransport class) and using your implementation by setting fixSession.fixTransport variable.
 
+**Loading FIX messages from files :** You can call FixMessage::loadFromFile method which will return a list of FixMessage objects. It will ignore the lines starting with a hash.
+
 **Limitations :** Current FIXServer is supporting only single client.
 
 **Example applications :** You will find example FIX server, client and concurrent client automation in examples directory : https://github.com/akhin/tiny_fix/blob/master/examples
