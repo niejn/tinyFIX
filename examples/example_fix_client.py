@@ -22,7 +22,7 @@ def main():
             order.setTags([
                             (FixConstants.TAG_CLIENT_ORDER_ID, 1), (FixConstants.TAG_SYMBOL, "GOOGL"),
                             (FixConstants.TAG_ORDER_QUANTITY, 100), (FixConstants.TAG_ORDER_PRICE, 300),
-                            (FixConstants.TAG_ORDER_SIDE, FixConstants.ORDER_SIDE_BUY),
+                            (FixConstants.TAG_ORDER_SIDE, FixConstants.ORDER_SIDE_BUY), (FixConstants.TAG_TRANSACTION_TIME, fixClient.fixSession.getCurrentUTCDateTime()),
                             (453, 2), (448, 1234), (447, 'P'), (452, 1), (448, 1235), (447, 'D'), (452, 2) #Repeating groups
                          ])
 

@@ -116,6 +116,7 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
     senderCompId = baseCompId + str(clientIndex)
 
     fixClient = FixAutomationClient()
+    fixClient.fixSession.restoreSequenceNumberFromFile = True
 
     orders = FixMessage.loadFromFile(ordersFile)
     ordersCount = len(orders)
@@ -129,7 +130,8 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
         processedCount = 0
 
         for order  in orders:
-            fixClient.send(order)
+            order.setTag(FixConstants.TAG_TRANSACTION_TIME, fixClient.fixSession.getCurrentUTCDateTime())
+            fixClient.send(order, True, 120)
 
         print(senderCompId + " fired all orders")
 

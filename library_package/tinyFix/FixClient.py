@@ -23,6 +23,7 @@ SOFTWARE.
 from FixConstants import FixConstants
 from FixMessage import FixMessage
 from FixSession import FixSession
+import time
 
 class FixClient:
     def __init__(self):
@@ -75,8 +76,26 @@ class FixClient:
     def recv(self):
         return self.fixSession.recv()
 
-    def send(self, fixMessage, sendClientOrderId=True):
+    def send(self, fixMessage, sendClientOrderId=True, timeoutSeconds=0):
         if sendClientOrderId is True:
             self.orderId += 1
             fixMessage.setTag(FixConstants.TAG_CLIENT_ORDER_ID, self.orderId)
-        return self.fixSession.send(fixMessage)
+        ret = False
+        
+        def getTimeInSeconds():
+            return int(round(time.time()))
+        
+        trialStart = getTimeInSeconds()
+        while True:
+            ret = self.fixSession.send(fixMessage)
+            if ret is True:
+                break
+                
+            if timeoutSeconds > 0:
+                deltaTime = getTimeInSeconds() - trialStart
+                if deltaTime >= timeoutSeconds:
+                    break
+            else:
+                break
+            
+        return ret

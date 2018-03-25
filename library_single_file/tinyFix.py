@@ -38,6 +38,8 @@ class FixConstants:
     VERSION_4_3 = "FIX.4.3"
     VERSION_4_4 = "FIX.4.4"
     VERSION_5_0 = "FIX.5.0"
+    VERSION_5_0SP1 = "FIX.5.0SP1"
+    VERSION_5_0SP2 = "FIX.5.0SP2"
     # TIMESTAMP PRECISION
     TIMESTAMP_PRECISION_SECONDS=1
     TIMESTAMP_PRECISION_MILLISECONDS=2
@@ -806,11 +808,29 @@ class FixClient:
     def recv(self):
         return self.fixSession.recv()
 
-    def send(self, fixMessage, sendClientOrderId=True):
+    def send(self, fixMessage, sendClientOrderId=True, timeoutSeconds=0):
         if sendClientOrderId is True:
             self.orderId += 1
             fixMessage.setTag(FixConstants.TAG_CLIENT_ORDER_ID, self.orderId)
-        return self.fixSession.send(fixMessage)
+        ret = False
+        
+        def getTimeInSeconds():
+            return int(round(time.time()))
+        
+        trialStart = getTimeInSeconds()
+        while True:
+            ret = self.fixSession.send(fixMessage)
+            if ret is True:
+                break
+                
+            if timeoutSeconds > 0:
+                deltaTime = getTimeInSeconds() - trialStart
+                if deltaTime >= timeoutSeconds:
+                    break
+            else:
+                break
+            
+        return ret
         
 class FixServer:
     def __init__(self):
