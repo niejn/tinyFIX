@@ -24,6 +24,7 @@ from FixConstants import FixConstants
 from FixMessage import FixMessage
 from FixTcpTransport import FixTcpTransport
 from threading import Lock
+import threading
 import os.path
 from datetime import datetime
 

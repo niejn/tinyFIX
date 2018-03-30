@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from tinyFix import FixConstants, FixClient, FixMessage
+from tinyFix import *
 import os
 from sys import platform as _platform
 #As Cpython ( default python engine) uses GIL ( https://wiki.python.org/moin/GlobalInterpreterLock )

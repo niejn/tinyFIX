@@ -23,6 +23,7 @@ SOFTWARE.
 from FixConstants import FixConstants
 from FixMessage import FixMessage
 import socket
+from sys import platform
 
 class FixTcpTransport:
     def __init__(self):
@@ -51,8 +52,14 @@ class FixTcpTransport:
                     break
                 except socket.error, v:
                     errorCode = v[0]
-                    if errorCode == 10061: # Remote actively refused it
-                        continue
+                    # Handle refusion for Linux
+                    if platform == "linux" or platform == "linux2": 
+                        if errorCode == 111: 
+                            continue
+                    # Handle refusion for Winsock
+                    if platform == "win32":
+                        if errorCode == 10061: 
+                            continue
                     raise Exception(v)
         except Exception as e:
             exceptionMessage = "Error during a connection attempt : "

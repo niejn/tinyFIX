@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from tinyFix import FixConstants, FixServer
+from tinyFix import *
 
 def main():
     fixServer = FixServer()
