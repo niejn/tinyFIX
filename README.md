@@ -4,7 +4,7 @@
 
 **What :**
 
-A minimal FIX protocol library for stock Python(2.7) to prototype FIX server and client applications.
+A minimal FIX protocol library for stock Python(2.7) to create tools using FIX protocol and prototype FIX server and client applications.
 	
 Since it is for stock Python, it will work on most Linux distributions as is.
 	

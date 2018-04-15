@@ -233,10 +233,10 @@ class FixSession:
                 self.send(logoffMessage)
                 if self.server == False:
                     logoffResponse = self.recv()
-                print("Disconnected : " + logoffResponse.toString())
-                self.fixTransport.close()
             except:
                 pass
+            finally:
+                self.fixTransport.close()
             self.connected = False
             self.saveSequenceNumberToFile()
 

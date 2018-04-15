@@ -4,7 +4,7 @@ import os
 from sys import platform as _platform
 #As Cpython ( default python engine) uses GIL ( https://wiki.python.org/moin/GlobalInterpreterLock )
 #using process instead to benefit from multicore : http://stackoverflow.com/questions/1182315/python-multicore-processing
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Lock
 import time
 
 class Utility:
@@ -94,6 +94,7 @@ class StopWatch:
     def elapsedTimeInMilliseconds(self):
         return self.endTime - self.startTime
 
+               
 class FixAutomationClient(FixClient):
     def __init__(self):
         FixClient.__init__(self)
@@ -112,20 +113,28 @@ class FixAutomationClient(FixClient):
     def addExecutionReport(self, fixMessage):
         self.executionReports.append(fixMessage)
 
-def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, address, port, baseCompId, clientIndex, targetCompid):
+def syncronisedPrint(mutex, message):
+        mutex.acquire()
+        print(message)
+        mutex.release()
+        
+FIX_CLIENT_AUTOMATION_MUTEX = Lock()
+        
+def fixClientAutomationClientThread(fixClientAutomationMutex, resultsQueue, ordersFile, fixVersion, address, port, baseCompId, clientIndex, targetCompid):
+    
     senderCompId = baseCompId + str(clientIndex)
 
     fixClient = FixAutomationClient()
     fixClient.fixSession.restoreSequenceNumberFromFile = True
-
+    
     orders = FixMessage.loadFromFile(ordersFile)
     ordersCount = len(orders)
-
+    
     fixClient.connect(address, port, fixVersion, senderCompId, targetCompid)
     connected = fixClient.fixSession.connected
 
     if connected is True:
-        print( senderCompId + " connected" )
+        syncronisedPrint(fixClientAutomationMutex, senderCompId + " connected" )
 
         processedCount = 0
 
@@ -133,7 +142,7 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
             order.setTag(FixConstants.TAG_TRANSACTION_TIME, fixClient.fixSession.getCurrentUTCDateTime())
             fixClient.send(order, True, 120)
 
-        print(senderCompId + " fired all orders")
+        syncronisedPrint(fixClientAutomationMutex, senderCompId + " fired all orders")
 
         # Collect execution reports
         while True:
@@ -145,27 +154,27 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
             if message.getMessageType() is FixConstants.MESSAGE_HEARTBEAT:
                 continue
 
-            resultsQueue.put( str(clientIndex) +  "," +  message.toString(False) )
+            resultsQueue.put( message.toString(False) )
 
             if message.hasTag(FixConstants.TAG_ORDER_STATUS):
                 orderStatus = message.getTagValue(FixConstants.TAG_ORDER_STATUS)
                 if orderStatus is FixConstants.ORDER_STATUS_FILLED:
                     processedCount += 1
-                    print( senderCompId + " received a fill :" + str(processedCount) + " of " + str(ordersCount) )
+                    syncronisedPrint(fixClientAutomationMutex, senderCompId + " received a fill :" + str(processedCount) + " of " + str(ordersCount) )
                 if orderStatus is FixConstants.ORDER_STATUS_CANCELED:
                     processedCount += 1
                     ordersCount -= 1
-                    print( senderCompId + " received a cancel :" + str(processedCount) + " of " + str(ordersCount) )
+                    syncronisedPrint(fixClientAutomationMutex, senderCompId + " received a cancel :" + str(processedCount) + " of " + str(ordersCount) )
 
             if processedCount == ordersCount:
                 break
 
         fixClient.disconnect()
-        print(senderCompId + " disconnected")
+        syncronisedPrint(fixClientAutomationMutex, senderCompId + " disconnected")
 
 class FixClientAutomation:
     def __init__(self):
-        self.resultsQueue = Queue()
+        self.resultsQueue = []
         self.fixClientThreads = []
         self.fixVersion = ""
         self.numberOfClients = 0
@@ -194,8 +203,10 @@ class FixClientAutomation:
 
     def start(self):
         for i in range(0, self.numberOfClients):
+            currentQueue = Queue()
+            self.resultsQueue.append(currentQueue)
             fixClientThread = Process(target=fixClientAutomationClientThread,
-                                      args=[self.resultsQueue, self.ordersFile, self.fixVersion, self.address, self.port, self.compIdBase, i+1, self.targetCompId ])
+                                      args=[FIX_CLIENT_AUTOMATION_MUTEX, self.resultsQueue[i], self.ordersFile, self.fixVersion, self.address, self.port, self.compIdBase, i+1, self.targetCompId ])
             self.fixClientThreads.append(fixClientThread)
             self.fixClientThreads[len(self.fixClientThreads) - 1].start()
 
@@ -212,12 +223,9 @@ class FixClientAutomation:
         for i in range(0, numberOfClients):
             list = []
             clientExecReports.append(list)
-
-        while not self.resultsQueue.empty():
-            result = self.resultsQueue.get()
-            clientIndex = int(result.split(',')[0])-1
-            actualResult = result.split(',')[1]
-            clientExecReports[clientIndex-1].append(actualResult)
+            while not self.resultsQueue[i].empty():
+                result = self.resultsQueue[i].get()
+                clientExecReports[i].append(result)
 
         for i in range(0, numberOfClients):
             # Sender comp id
@@ -240,7 +248,7 @@ class FixClientAutomation:
 
         with open(reportFileName, "w") as textFile:
             textFile.write(report)
-
+ 
 def main():
     try:
         Utility.changeWorkingDirectoryToScriptLocation()

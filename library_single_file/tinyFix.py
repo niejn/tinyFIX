@@ -338,7 +338,7 @@ class FixMessage:
             bodyLength += len(str(tag)) + len( str(value) ) + 2 # +2 is because of = and delimiter
         return bodyLength
 
-    def toString(self, sendingAsMessage = False):
+    def toString(self, sendingAsMessage = False, usePipeAsDelimiter = False):
         # If it was Python3 could use a non local variable, instead  making string a mutable array
         messageAsString = [""]
         
@@ -346,7 +346,7 @@ class FixMessage:
             if len(value) == 0:
                 value = self.getTagValue(tag)
             messageAsString[0] += str(tag) + FixConstants.EQUALS + value
-            if sendingAsMessage is True:
+            if usePipeAsDelimiter is False:
                 messageAsString[0] += FixConstants.DELIMITER
             else:
                 messageAsString[0] += '|'
@@ -385,11 +385,14 @@ class FixMessage:
                 appendToMessageAsString(FixConstants.TAG_BODY_CHECKSUM)
 
         return messageAsString[0]
+    
+    def toReadableString(self):
+        ret = self.toString(False, True)
+        return ret
 
     def __str__(self):
-        ret = self.toString(False)
-        return ret
-		
+        return self.toReadableString()
+        
 class FixTcpTransport:
     def __init__(self):
         self.networkTimeoutInSeconds = 0
@@ -731,10 +734,10 @@ class FixSession:
                 self.send(logoffMessage)
                 if self.server == False:
                     logoffResponse = self.recv()
-                print("Disconnected : " + logoffResponse.toString())
-                self.fixTransport.close()
             except:
                 pass
+            finally:
+                self.fixTransport.close()
             self.connected = False
             self.saveSequenceNumberToFile()
 
